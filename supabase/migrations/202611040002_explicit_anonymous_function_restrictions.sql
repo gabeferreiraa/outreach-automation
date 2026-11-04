@@ -1,0 +1,1 @@
+revoke all on function public.is_workspace_member() from anon; revoke all on function public.review_draft(uuid,text,text,text,text) from anon; revoke insert,update,delete on public.workspace_members from anon,authenticated; grant select on public.workspace_members to authenticated;

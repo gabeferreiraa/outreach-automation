@@ -15,20 +15,18 @@ Open http://localhost:3000. Without Supabase environment variables the app shows
 
 ## Connect a dedicated Supabase project
 
-1. Create a free project when an active-project slot is available. Existing staging projects need not be deleted. As of setup, creation was blocked by the account's two-active-free-project limit; no existing project was modified.
-2. Run `supabase/migrations/202611040001_foundation.sql` using the Supabase SQL editor, then `supabase/seed.sql`. Alternatively use Supabase CLI migrations against the intended project. Seed is idempotent and does not overwrite review decisions.
-3. In Authentication, create/invite your owner user. Disable public signups. Configure Site URL and redirect URLs for localhost and your eventual production URL.
-4. Add the owner to the workspace allowlist in the SQL editor:
+1. Create a dedicated project, then apply all files in `supabase/migrations/` in order and run `supabase/seed.sql`. The seed is idempotent.
+2. Add your lowercase owner email to `public.workspace_owner_emails` using the SQL editor. This private table controls who can register. New users do not gain workspace membership until their email is verified.
+3. Keep email confirmation enabled. Configure the Auth Site URL and redirect allowlist for `http://localhost:3000` and your eventual production URL. Email signup must remain enabled for the first passwordless owner login; database triggers reject any email outside the owner allowlist.
+4. Copy `.env.example` to `.env` and fill the project URL and **publishable key**, never a service-role key. Restart `pnpm dev`. Enter your owner email and request a sign-in link. You must open that link yourself. Supabase default email delivery can restrict recipients; if the project reports an email delivery restriction, configure an approved SMTP provider before retrying.
 
-```sql
-insert into public.workspace_members(user_id)
-select id from auth.users where email = 'YOUR_OWNER_EMAIL'
-on conflict do nothing;
-```
+## Current setup
 
-5. Copy `.env.example` to `.env`, then set the project URL and **publishable key**, not the service-role key. Restart `pnpm dev`. Sign in with the owner email. No passwords or secret keys belong in source control.
+A dedicated project, `Impossible Solutions Outreach` (`ibvwzirhrvpkgvzwwrbc`, us-east-1), is provisioned and seeded with five fictional leads. The local ignored `.env` connects to it. Owner access is configured for the email chosen during setup. No login email was sent by the agent.
 
-The database uses row-level security and an explicit workspace membership allowlist. Browser clients can read only as an allowed member. Edits and rejections go through `review_draft`, which locks the draft and records its decision event in the same transaction. Direct browser writes to business tables are revoked. Unsupported actions, including approval, are rejected by the database. Agent events are included in the realtime publication for milestone 4. No connected-database verification has happened until the migration runs on a project.
+Live database verification passed for member reads, atomic edit/rejection events, terminal-state protection, denied direct browser writes, non-member isolation, anonymous function restrictions, and verified-owner provisioning. Verification transactions were rolled back. The owner still needs to complete passwordless sign-in in their own browser.
+
+The database uses row-level security and an explicit workspace membership allowlist. Browser clients can read only as an allowed member. Edits and rejections go through `review_draft`, which locks the draft and records its decision event in the same transaction. Direct browser writes to business tables are revoked. Unsupported actions, including approval, are rejected by the database. Agent events are included in the realtime publication for milestone 4. Connected-database checks are recorded above.
 
 ## Validation
 
@@ -39,7 +37,7 @@ pnpm build
 pnpm start
 ```
 
-Tests cover validation and queue eligibility. The browser sample flow was exercised for selecting, editing, saving, rejecting, and updating counts. Database permissions and atomic decision behavior must also be verified after provisioning. Dependency versions are pinned and the lockfile is committed. The Sonatype service was unavailable during setup; its additional dependency review remains outstanding.
+Tests cover validation and queue eligibility. The browser sample flow was exercised for selecting, editing, saving, rejecting, and updating counts. Database permissions and atomic decision behavior were verified after provisioning. Dependency versions are pinned and the lockfile is committed. The Sonatype service was unavailable during setup; its additional dependency review remains outstanding.
 
 ## A Raspberry Pi running 24/7
 
