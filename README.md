@@ -1,6 +1,8 @@
 # Impossible Solutions Outreach
 
-Milestone 1: a TanStack Start / React / TypeScript approvals dashboard, Supabase migration, and five explicitly fictional lead fixtures. No email-sending code or agents run in this milestone.
+Milestone 1: a TanStack Start / React / TypeScript dashboard, Supabase migrations, and five explicitly fictional lead fixtures. The Overview home page brings together review counts, the lead pipeline, campaign context, agent availability, and recent activity. `/approvals` is the focused editing and rejection queue. No email-sending code or agents run in this milestone.
+
+Use `/?preview=true` to explore the Overview with fictional data even when the local app is connected to Supabase. Preview mode never reads or changes the connected database. It stays clearly labeled and links to the sample approval queue. The normal home page requires owner sign-in. Overview values are snapshots, with a refresh action; agent activity remains explicitly unconnected until its later milestone.
 
 ## Run locally
 
