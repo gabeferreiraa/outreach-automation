@@ -1,0 +1,9 @@
+import type { Draft } from './model'
+const samples = [
+ ['Juniper Coffee — SAMPLE','cafe','100 Example Ave, Philadelphia','https://example.com','hello@example.com','The sample menu is an image that is difficult to read on a phone.',38,'Starter Site'],
+ ['Westside Bicycle — SAMPLE','bicycle store','102 Example Ave, Philadelphia','https://example.org','service@example.org','The sample website does not explain how to book a repair.',54,'Starter Site'],
+ ['Sunday Barber — SAMPLE','barber','104 Example Ave, Philadelphia',null,null,'This fictional business has no dedicated website.',null,'Starter Site'],
+ ['Golden Bowl — SAMPLE','restaurant','106 Example Ave, Philadelphia','https://example.net','team@example.net','The sample ordering link opens a broken page.',42,'Care Plan'],
+ ['Rolling Kitchen — SAMPLE','food truck','108 Example Ave, Philadelphia',null,null,'The sample profile has no weekly location schedule.',null,'Truck Page'],
+] as const
+export const sampleDrafts:Draft[] = samples.map(([name,category,address,website,email,hook,score,tier],i)=>({id:`sample-${i+1}`,lead_id:`sample-lead-${i+1}`,status:'pending',channel:email?'email':'walk_in_note',subject:`A quick idea for ${name.replace(' — SAMPLE','')}`,body:`Hi there,\n\nI'm Gabe, a senior at Drexel studying User Experience & Interaction Design. I also run a small web design studio, Impossible Solutions.\n\n${hook}\n\nI help local shops with a ${tier}. If you're open to it, I'm happy to stop by for a quick chat or set up a short call, whichever is easier.\n\nThanks,\nGabe\n— Gabriel Ferreira, Founder, Impossible Solutions LLC · impossiblesolutions.studio\n[Add physical mailing address before sending] · Reply "no thanks" and I won't follow up.`,leads:{name,category,address,website,contact_email:email,audits:[{hook,issues:[hook],mobile_score:score}]}}))
