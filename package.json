@@ -9,9 +9,12 @@
     "check": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "start": "node --experimental-strip-types scripts/serve.ts",
-    "seed:generate": "node --experimental-strip-types scripts/generate-seed.ts"
+    "seed:generate": "node --experimental-strip-types scripts/generate-seed.ts",
+    "worker": "node --env-file=.env --experimental-strip-types scripts/worker.ts",
+    "worker:check": "node --env-file=.env --experimental-strip-types scripts/worker.ts --check"
   },
   "dependencies": {
+    "@openai/agents": "0.21.0",
     "@supabase/supabase-js": "2.119.0",
     "@tanstack/react-router": "1.170.46",
     "@tanstack/react-start": "1.169.4",

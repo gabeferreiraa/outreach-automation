@@ -13,3 +13,8 @@ test('stale run starts do not imply a worker is still running',()=>{
 test('latest run failure takes priority over earlier completion',()=>{
  assert.equal(agentState('Writer',[event('run_failed'),event('run_completed',1000)],false).state,'Needs attention')
 })
+test('live heartbeat distinguishes a connected idle worker from a stale worker',()=>{
+ const worker={agent:'Scout',state:'idle' as const,task:'Waiting for a campaign',last_seen:new Date().toISOString(),items_processed:0,last_run:null}
+ assert.equal(agentState('Scout',[],false,[worker]).state,'Idle')
+ assert.equal(agentState('Scout',[],false,[{...worker,last_seen:new Date(Date.now()-60000).toISOString()}]).state,'Offline')
+})

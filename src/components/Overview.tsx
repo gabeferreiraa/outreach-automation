@@ -7,10 +7,10 @@ export function Overview({drafts,client,preview}:{drafts:Draft[];client:Supabase
  const review=(id:string)=>href('/approvals')+(preview?'&':'?')+'lead='+encodeURIComponent(id)
  const walkins=queue.filter(d=>d.channel==='walk_in_note')
  const conversations=data.leads.filter(l=>l.status==='replied')
- const agents=agentNames.map(name=>({name,...agentState(name,data.events,preview)}))
+ const agents=agentNames.map(name=>({name,...agentState(name,data.events,preview,data.workers)}))
  const active=agents.filter(a=>a.tone==='working').length
  return <div className="command-overview">
-  <div className="command-meta"><span><i className={data.error?'signal error':'signal'}/>{data.error?'Connection needs attention':preview?'Sample workspace · fictional data':data.loading?'Connecting…':'Database connected'}</span><span>{preview?'Agent states shown as examples':data.updated?'Updated '+data.updated+' · every 30s':'Waiting for status'}</span></div>
+  <div className="command-meta"><span><i className={data.error?'signal error':'signal'}/>{data.error?'Connection needs attention':preview?'Sample workspace · fictional data':data.loading?'Connecting…':'Database connected'}</span><span>{preview?'Agent states shown as examples':data.updated?'Updated '+data.updated+' · live status':'Waiting for status'}</span></div>
   {data.error&&<p className="command-error" role="alert">Status could not be refreshed. Showing the last available snapshot.</p>}
   <div className="command-totals">{[[queue.length,'Awaiting review','/approvals'],[data.leads.length,'Leads in pipeline','/leads'],[walkins.length,'Walk-in notes','/leads'],[conversations.length,'Replies to check','/leads']].map(([value,label,path])=><a key={label} href={href(String(path))}><span>{label}</span><strong>{data.loading?'—':String(value).padStart(2,'0')}</strong><i aria-hidden="true">↗</i></a>)}</div>
   <div className="command-grid">
