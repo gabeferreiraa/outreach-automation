@@ -2,7 +2,11 @@
 
 Milestone 1: a TanStack Start / React / TypeScript dashboard, Supabase migrations, and five explicitly fictional lead fixtures. The Overview home page brings together review counts, the lead pipeline, campaign context, agent availability, and recent activity. `/approvals` is the focused editing and rejection queue. No email-sending code or agents run in this milestone.
 
-Use `/?preview=true` to explore the Overview with fictional data even when the local app is connected to Supabase. Preview mode never reads or changes the connected database. It stays clearly labeled and links to the sample approval queue. The normal home page requires owner sign-in. Overview values are snapshots, with a refresh action; agent activity remains explicitly unconnected until its later milestone.
+Use `/?preview=true` to explore the Overview with fictional data even when the local app is connected to Supabase. Preview mode never reads or changes the connected database. It stays clearly labeled and links to the sample approval queue. The normal home page requires owner sign-in. Overview snapshots refresh automatically every 30 seconds. Every overview item navigates to detail; there are no editing or review actions on the home screen. Business rows deep-link to their matching draft. Agents, Leads, and Campaigns have read-only detail pages while later milestones implement their workflows.
+
+The sidebar collapses into an icon rail and remembers its state locally. The overview was measured at 907 × 712 with both navigation states: document dimensions matched the viewport with no scroll. Narrow/mobile screens stack panels to keep content readable. The visual hierarchy follows visibility of system status, recognition over recall, and minimalist presentation from [Nielsen's usability heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/): status first, named businesses and next steps second, pipeline and events third. Text accompanies status colors; links have focus outlines and descriptive labels, and sidebar control exposes its expanded state.
+
+Live workers with no events are shown as Not connected, not Idle. Explicit run events distinguish Working, Idle, and Needs attention; a start event without completion after ten minutes becomes Unconfirmed. Preview Idle states are labeled examples. No workers run in milestone 1. Six tests cover validation, queue eligibility, missing-worker reporting, stale status, and failure priority.
 
 ## Run locally
 
