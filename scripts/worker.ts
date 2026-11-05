@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto'
 import { setTimeout as delay } from 'node:timers/promises'
 import { jobSchema } from '../src/lib/campaign.ts'
 import { runScout } from '../src/workers/scout.ts'
+import { safeWorkerError } from '../src/workers/errors.ts'
 const required=['VITE_SUPABASE_URL','SUPABASE_SECRET_KEY','GOOGLE_PLACES_API_KEY','OPENAI_API_KEY'] as const
 const missing=required.filter(name=>!process.env[name])
 if(missing.length){console.error('Scout is not connected. Add these server-only settings to .env: '+missing.join(', '));process.exit(1)}
@@ -24,9 +25,9 @@ try{while(!stopped){
   const leads=await runScout(job,process.env.GOOGLE_PLACES_API_KEY!)
   const result=await db.rpc('finish_scout_run',{p_run_id:job.id,p_worker_id:workerId,p_leads:leads});if(result.error)throw result.error
   processed+=Number(result.data);state='idle';task='Waiting for a campaign';console.log(`Scout completed: ${result.data} new leads saved.`)
- }catch{
+ }catch(error){
   // Provider errors may contain request details; keep credentials and raw payloads out of logs.
-  const message='Discovery failed. Check worker credentials, Google billing/quota, and provider availability.'
+  const message=safeWorkerError(error)
   const failed=await db.from('campaign_runs').update({status:'failed',finished_at:new Date().toISOString(),error:message}).eq('id',job.id).eq('worker_id',workerId).eq('status','running');if(failed.error)throw failed.error
   await log('run_failed',{run_id:job.id,message});state='error';task=message;console.error(message)
  }
