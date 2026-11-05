@@ -1,0 +1,19 @@
+[Unit]
+Description=Impossible Solutions Scout worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=outreach
+WorkingDirectory=/opt/outreach
+ExecStart=/usr/bin/node --env-file=/opt/outreach/.env --experimental-strip-types /opt/outreach/scripts/worker.ts
+Restart=on-failure
+RestartSec=15
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
