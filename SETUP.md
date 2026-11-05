@@ -1,6 +1,6 @@
 # Connecting Scout
 
-The Scout worker is implemented, but a real discovery run has not yet been verified. A worker does not register as connected until all required settings exist and its database lease is acquired.
+The Scout worker is connected and a one-business live discovery run passed on November 4, 2026. It saved one real Google Places record and logged queued, started, and completed events before returning to Idle. The original trial encountered exhausted OpenAI API credits; after the owner funded the account, the retry completed. All private keys are in the local ignored `.env`, not in the repository. The worker is currently a local process; an always-on service still needs deployment.
 
 ## Accounts and keys
 
